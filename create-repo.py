@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
-import os, sys, subprocess, requests
+import os, sys, subprocess
+
+try:
+    import requests
+except ImportError:
+
+
+
 
 # 1) Grab your token from the environment
-token = os.getenv("GITHUB_PAT")
+    token = os.getenv("GITHUB_PAT")
 if not token:
     print("❌ Set GITHUB_PAT env var before running.")
     sys.exit(1)

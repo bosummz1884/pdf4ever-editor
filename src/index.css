@@ -2,12 +2,13 @@ body {
   margin: 0;
   font-family: sans-serif;
 }
-.pdf-editor {
+.app {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2rem;
 }
-canvas {
+.pdf-editor canvas {
   border: 1px solid #ccc;
   margin-top: 1rem;
 }

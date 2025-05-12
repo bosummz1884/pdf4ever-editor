@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { pdfjs } from 'pdfjs-dist';
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist/legacy/build/pdf';
 import { PDFDocument } from 'pdf-lib';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${GlobalWorkerOptions.version}/pdf.worker.js`;
 
 export default function PdfEditor() {
   const canvasRef = useRef(null);
@@ -14,7 +14,7 @@ export default function PdfEditor() {
     if (file) {
       setFile(file);
       const arrayBuffer = await file.arrayBuffer();
-      const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+      const loadingTask = getDocument({ data: arrayBuffer });
       const pdf = await loadingTask.promise;
       setPdfDoc(pdf);
     }

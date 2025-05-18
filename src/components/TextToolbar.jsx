@@ -54,6 +54,6 @@ export default function TextToolbar({
         <span style={{ fontSize: '0.85rem' }}>Text Color:</span>
         <HexColorPicker color={color} onChange={setColor} />
       </div>
-    </ToolbarContainer>
+    </ToolbarContainer> // Rebuild Trigger
   );
 }

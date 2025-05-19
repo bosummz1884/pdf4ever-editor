@@ -1,24 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import PdfEditor from './components/PdfEditor';
-import Offerwall from './components/Offerwall';
+// src/App.jsx
+import React, { useState } from 'react';
+import PDFTextEditor from './components/PDFTextEditor';
+import OceanGradient from './components/OceanGradient';
 
 export default function App() {
-  const [tokens, setTokens] = useState(0);
-  useEffect(() => {
-    const t = Number(localStorage.getItem('tokens') || 0);
-    setTokens(t);
-  }, []);
-  const handleEarn = (n) => {
-    const newTokens = tokens + n;
-    localStorage.setItem('tokens', newTokens);
-    setTokens(newTokens);
+  const [pdfBytes, setPdfBytes] = useState(null);
+  const [error, setError] = useState(null);
+
+  const onFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.includes('pdf')) {
+      setError('Only PDF files are supported.');
+      return;
+    }
+    try {
+      const buffer = await file.arrayBuffer();
+      setPdfBytes(new Uint8Array(buffer));
+      setError(null);
+    } catch (err) {
+      console.error('Error reading file:', err);
+      setError('Failed to load PDF. Please try again.');
+    }
   };
+
   return (
-    <div className="app">
-      <h1>PDF4EVER Editor</h1>
-      <div>Free Edit Tokens: {tokens}</div>
-      <Offerwall onEarn={handleEarn} />
-      <PdfEditor tokens={tokens} />
-    </div>
+    <>
+      <OceanGradient />
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>PDF4EVER Editor</h1>
+        {!pdfBytes && (
+          <>
+            <p>Select a PDF file to begin editing:</p>
+            <input type="file" accept="application/pdf" onChange={onFileChange} />
+            {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+          </>
+        )}
+        {pdfBytes && <PDFTextEditor pdfBytes={pdfBytes} />}
+      </div>
+    </>
   );
 }

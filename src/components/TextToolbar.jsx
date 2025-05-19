@@ -4,22 +4,22 @@ import React from 'react';
 import styled from 'styled-components';
 import { HexColorPicker } from 'react-colorful';
 
-const ToolbarContainer = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+const ToolbarWrapper = styled.div`
+  position: fixed;
+  right: 20px;
+  top: 100px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #ccc;
+  padding: 1rem;
   border-radius: 8px;
-  padding: 0.5rem;
+  z-index: 100;
   display: flex;
-  gap: 0.75rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 export default function TextToolbar({
+  visible,
   fontSize,
   setFontSize,
   bold,
@@ -29,8 +29,10 @@ export default function TextToolbar({
   color,
   setColor
 }) {
+  if (!visible) return null;
+
   return (
-    <ToolbarContainer>
+    <ToolbarWrapper>
       <label>
         Font Size:
         <input
@@ -39,21 +41,21 @@ export default function TextToolbar({
           max="72"
           value={fontSize}
           onChange={(e) => setFontSize(parseInt(e.target.value))}
-          style={{ width: '50px', marginLeft: '0.5rem' }}
         />
       </label>
 
       <button onClick={() => setBold(!bold)} style={{ fontWeight: bold ? 'bold' : 'normal' }}>
-        B
+        Bold
       </button>
       <button onClick={() => setItalic(!italic)} style={{ fontStyle: italic ? 'italic' : 'normal' }}>
-        I
+        Italic
       </button>
 
       <div>
-        <span style={{ fontSize: '0.85rem' }}>Text Color:</span>
+        <span style={{ fontSize: '0.9rem' }}>Text Color:</span>
         <HexColorPicker color={color} onChange={setColor} />
       </div>
-    </ToolbarContainer> // Rebuild Trigger
+    </ToolbarWrapper>
   );
 }
+

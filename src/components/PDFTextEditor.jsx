@@ -4,9 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
 import { PDFDocument } from 'pdf-lib';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min?worker';
+
 import styled from 'styled-components';
 
-GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
 
 const ViewerContainer = styled.div`
   display: flex;

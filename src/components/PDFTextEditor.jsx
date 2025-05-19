@@ -1,15 +1,10 @@
-// src/components/PDFTextEditor.jsx
-
 import React, { useEffect, useRef, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
-import { PDFDocument } from 'pdf-lib';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min?worker';
-
+import pdfWorker from 'pdfjs-dist/build/pdf.worker?worker';
 import styled from 'styled-components';
 
-GlobalWorkerOptions.workerSrc = pdfjsWorker;
-
+GlobalWorkerOptions.workerSrc = pdfWorker;
 
 const ViewerContainer = styled.div`
   display: flex;

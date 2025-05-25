@@ -3,11 +3,13 @@ import ContentEditable from 'react-contenteditable';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?worker';
 import styled from 'styled-components';
+
 import FontToolbar from './FontToolbar';
 import SavePDFButton from 'SavePDFButton';
 import AnnotationCanvas from './AnnotationCanvas';
 import AnnotationToolbar from './AnnotationToolbar';
 import StickyNoteTool from './StickyNoteTool';
+import PageActions from 'PageActions';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -47,6 +49,7 @@ const PageButton = styled.button`
 export default function PDFTextEditor({ pdfBytes, premium }) {
   const canvasRef = useRef(null);
   const [pdfDoc, setPdfDoc] = useState(null);
+  const [currentBytes, setCurrentBytes] = useState(pdfBytes);
   const [textBlocks, setTextBlocks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
@@ -60,15 +63,15 @@ export default function PDFTextEditor({ pdfBytes, premium }) {
   ];
 
   useEffect(() => {
-    if (!pdfBytes) return;
+    if (!currentBytes) return;
     (async () => {
-      const loadingTask = getDocument({ data: pdfBytes });
+      const loadingTask = getDocument({ data: currentBytes });
       const doc = await loadingTask.promise;
       setPdfDoc(doc);
       setNumPages(doc.numPages);
       await renderPage(doc, 1);
     })();
-  }, [pdfBytes]);
+  }, [currentBytes]);
 
   const renderPage = async (doc, pageNum) => {
     const page = await doc.getPage(pageNum);
@@ -110,6 +113,12 @@ export default function PDFTextEditor({ pdfBytes, premium }) {
           />
         )}
 
+        <PageActions
+          pdfBytes={currentBytes}
+          currentPage={currentPage}
+          setPdfBytes={setCurrentBytes}
+        />
+
         <canvas ref={canvasRef} />
 
         <AnnotationCanvas
@@ -149,7 +158,7 @@ export default function PDFTextEditor({ pdfBytes, premium }) {
         })}
 
         <SavePDFButton
-          pdfBytes={pdfBytes}
+          pdfBytes={currentBytes}
           textBlocks={textBlocks}
           pageHeight={canvasRef.current?.height || 800}
         />

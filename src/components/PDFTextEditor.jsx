@@ -3,12 +3,15 @@ import ContentEditable from 'react-contenteditable';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?worker';
 import styled from 'styled-components';
+import FontToolbar from './FontToolbar';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
 const ViewerContainer = styled.div`
   display: flex;
   position: relative;
+  width: 100%;
+  height: 100%;
 `;
 
 const CanvasWrapper = styled.div`
@@ -37,12 +40,18 @@ const PageButton = styled.button`
   }
 `;
 
-export default function PDFTextEditor({ pdfBytes }) {
+export default function PDFTextEditor({ pdfBytes, premium }) {
   const canvasRef = useRef(null);
   const [pdfDoc, setPdfDoc] = useState(null);
   const [textBlocks, setTextBlocks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
+  const [currentFont, setCurrentFont] = useState('Helvetica');
+
+  const availableFonts = [
+    'Helvetica', 'Arial', 'Times New Roman', 'Courier New',
+    'Georgia', 'Verdana', 'Tahoma', 'Trebuchet MS'
+  ];
 
   useEffect(() => {
     if (!pdfBytes) return;
@@ -87,13 +96,25 @@ export default function PDFTextEditor({ pdfBytes }) {
       </Sidebar>
 
       <CanvasWrapper>
+        {premium && (
+          <FontToolbar
+            currentFont={currentFont}
+            availableFonts={availableFonts}
+            onFontChange={setCurrentFont}
+          />
+        )}
+
         <canvas ref={canvasRef} />
+
         {textBlocks.map((tb, i) => {
           const [a, b, c, d, x, y] = tb.transform;
+          const isEditable = premium || i < 3; // preview editable for first few blocks
+
           return (
             <ContentEditable
               key={i}
               html={tb.str}
+              disabled={!isEditable}
               onChange={(e) => {
                 const newBlocks = [...textBlocks];
                 newBlocks[i].str = e.target.value;
@@ -102,9 +123,12 @@ export default function PDFTextEditor({ pdfBytes }) {
               style={{
                 position: 'absolute',
                 transform: `matrix(${a},${b},${c},${d},${x},${canvasRef.current?.height - y})`,
-                fontFamily: tb.fontName || 'Helvetica',
-                background: 'rgba(255,255,255,0.5)',
-                outline: '1px dashed rgba(0,0,0,0.3)',
+                fontFamily: premium ? currentFont : tb.fontName || 'Helvetica',
+                background: premium ? 'rgba(255,255,255,0.3)' : 'transparent',
+                outline: premium ? '1px dashed rgba(0,0,0,0.2)' : 'none',
+                whiteSpace: 'nowrap',
+                padding: '1px',
+                color: premium ? '#111' : 'inherit'
               }}
             />
           );
@@ -113,4 +137,3 @@ export default function PDFTextEditor({ pdfBytes }) {
     </ViewerContainer>
   );
 }
-

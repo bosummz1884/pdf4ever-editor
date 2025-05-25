@@ -1,10 +1,8 @@
-// src/components/FontMatchingService.js
-
 import opentype from 'opentype.js';
 
 /**
- * Detects font metadata from a font file buffer using opentype.js
- * @param {ArrayBuffer} buffer - The binary font data
+ * Detect font metadata from a binary font buffer using opentype.js
+ * @param {ArrayBuffer} buffer
  * @returns {Object|null}
  */
 export async function detectFontFromBuffer(buffer) {
@@ -23,14 +21,13 @@ export async function detectFontFromBuffer(buffer) {
 }
 
 /**
- * Matches a detected font to a known list (stubbed for now)
- * @param {string} targetName - Font name to match
- * @param {Array} fontList - Array of available fonts
+ * Attempt to match a target font name against a fallback list
+ * @param {string} targetName
+ * @param {string[]} availableFonts
  * @returns {string}
  */
-export function matchFont(targetName, fontList) {
-  const target = targetName.toLowerCase();
-  const found = fontList.find(f => f.toLowerCase().includes(target));
-  return found || 'Helvetica';
+export function matchFont(targetName, availableFonts) {
+  const lower = targetName.toLowerCase();
+  const match = availableFonts.find(f => f.toLowerCase().includes(lower));
+  return match || 'Helvetica';
 }
-

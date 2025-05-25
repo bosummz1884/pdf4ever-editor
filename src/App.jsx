@@ -1,64 +1,60 @@
-// src/App.jsx
-
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import PDFTextEditor from './components/PDFTextEditor';
-import TextToolbar from './components/TextToolbar';
-import OfferWall from './components/OfferWall';
-import OceanGradient from './components/OceanGradient';
+import PremiumWrapper from './PremiumWrapper';
+
+const Wrapper = styled.div`
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  min-height: 100vh;
+`;
+
+const InputWrapper = styled.div`
+  margin-top: 2rem;
+`;
 
 export default function App() {
   const [pdfBytes, setPdfBytes] = useState(null);
-  const [fontSize, setFontSize] = useState(12);
-  const [bold, setBold] = useState(false);
-  const [italic, setItalic] = useState(false);
-  const [color, setColor] = useState('#000000');
-  const [credits, setCredits] = useState(() => {
-    const stored = localStorage.getItem('credits');
-    return stored ? parseInt(stored) : 1;
-  });
+  const [error, setError] = useState(null);
 
   const onFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (credits <= 0) {
-      alert('No free credits left. Use offer wall to earn more!');
+    if (!file.type.includes('pdf')) {
+      setError('Only PDF files are supported.');
       return;
     }
-    const buffer = await file.arrayBuffer();
-    setPdfBytes(new Uint8Array(buffer));
-    setCredits((prev) => {
-      const updated = prev - 1;
-      localStorage.setItem('credits', updated);
-      return updated;
-    });
-  };
-
-  const handleReward = (amount) => {
-    setCredits((prev) => {
-      const updated = prev + amount;
-      localStorage.setItem('credits', updated);
-      return updated;
-    });
+    try {
+      const buffer = await file.arrayBuffer();
+      setPdfBytes(new Uint8Array(buffer));
+      setError(null);
+    } catch (err) {
+      console.error('Error reading file:', err);
+      setError('Failed to load PDF. Please try again.');
+    }
   };
 
   return (
-    <>
-      <OceanGradient />
-      <div style={{ padding: '1rem' }}>
-        <input type="file" accept=".pdf" onChange={onFileChange} />
-        <OfferWall credits={credits} onComplete={handleReward} />
-        {pdfBytes && <PDFTextEditor pdfBytes={pdfBytes} />}
-        <TextToolbar
-          fontSize={fontSize}
-          setFontSize={setFontSize}
-          bold={bold}
-          setBold={setBold}
-          italic={italic}
-          setItalic={setItalic}
-          color={color}
-          setColor={setColor}
-        />
-      </div>
-    </>
+    <Wrapper>
+      <h1>PDF4EVER Editor</h1>
+
+      {!pdfBytes && (
+        <InputWrapper>
+          <p>Select a PDF file to begin editing:</p>
+          <input type="file" accept="application/pdf" onChange={onFileChange} />
+          {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+        </InputWrapper>
+      )}
+
+      {pdfBytes && (
+        <PremiumWrapper>
+          {({ hasPremium }) => (
+            <PDFTextEditor pdfBytes={pdfBytes} premium={hasPremium} />
+          )}
+        </PremiumWrapper>
+      )}
+    </Wrapper>
   );
 }

@@ -13,7 +13,7 @@ import PageActions from 'PageActions';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
-const ViewerContainer = styled.div`
+const ViewerContainer = styled.div`s
   display: flex;
   position: relative;
   width: 100%;

@@ -4,6 +4,10 @@ import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?worker';
 import styled from 'styled-components';
 import FontToolbar from './FontToolbar';
+import SavePDFButton from 'SavePDFButton';
+import AnnotationCanvas from './AnnotationCanvas';
+import AnnotationToolbar from './AnnotationToolbar';
+import StickyNoteTool from './StickyNoteTool';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -47,6 +51,8 @@ export default function PDFTextEditor({ pdfBytes, premium }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
   const [currentFont, setCurrentFont] = useState('Helvetica');
+  const [activeTool, setActiveTool] = useState('select');
+  const [notes, setNotes] = useState([]);
 
   const availableFonts = [
     'Helvetica', 'Arial', 'Times New Roman', 'Courier New',
@@ -106,9 +112,17 @@ export default function PDFTextEditor({ pdfBytes, premium }) {
 
         <canvas ref={canvasRef} />
 
+        <AnnotationCanvas
+          width={canvasRef.current?.width}
+          height={canvasRef.current?.height}
+          tool={activeTool}
+        />
+
+        <StickyNoteTool notes={notes} setNotes={setNotes} />
+
         {textBlocks.map((tb, i) => {
           const [a, b, c, d, x, y] = tb.transform;
-          const isEditable = premium || i < 3; // preview editable for first few blocks
+          const isEditable = premium || i < 3;
 
           return (
             <ContentEditable
@@ -133,7 +147,15 @@ export default function PDFTextEditor({ pdfBytes, premium }) {
             />
           );
         })}
+
+        <SavePDFButton
+          pdfBytes={pdfBytes}
+          textBlocks={textBlocks}
+          pageHeight={canvasRef.current?.height || 800}
+        />
       </CanvasWrapper>
+
+      <AnnotationToolbar activeTool={activeTool} onChangeTool={setActiveTool} />
     </ViewerContainer>
   );
 }

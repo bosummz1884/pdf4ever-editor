@@ -15,8 +15,8 @@ class EditedTextSpan {
 class EditedTextStyle {
   final String fontFamily;
   final double fontSize;
-  final FontWeight fontWeight;
-  final FontStyle fontStyle;
+  final String fontWeight; // 'normal' or 'bold'
+  final String fontStyle;  // 'normal' or 'italic'
   final Color color;
 
   EditedTextStyle({

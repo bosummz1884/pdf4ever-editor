@@ -24,19 +24,6 @@ class _TextEditorOverlayState extends State<TextEditorOverlay> {
     currentColor = _style.color;
   }
 
-  void _updateColor(Color color) {
-    setState(() {
-      currentColor = color;
-      _style = EditedTextStyle(
-        fontFamily: _style.fontFamily,
-        fontSize: _style.fontSize,
-        fontWeight: _style.fontWeight,
-        fontStyle: _style.fontStyle,
-        color: color,
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -50,8 +37,8 @@ class _TextEditorOverlayState extends State<TextEditorOverlay> {
               style: TextStyle(
                 fontFamily: _style.fontFamily,
                 fontSize: _style.fontSize,
-                fontWeight: _style.fontWeight,
-                fontStyle: _style.fontStyle,
+                fontWeight: _style.fontWeight == 'bold' ? FontWeight.bold : FontWeight.normal,
+                fontStyle: _style.fontStyle == 'italic' ? FontStyle.italic : FontStyle.normal,
                 color: currentColor,
               ),
               maxLines: null,
@@ -59,7 +46,18 @@ class _TextEditorOverlayState extends State<TextEditorOverlay> {
             const SizedBox(height: 20),
             BlockPicker(
               pickerColor: currentColor,
-              onColorChanged: _updateColor,
+              onColorChanged: (color) {
+                setState(() {
+                  currentColor = color;
+                  _style = EditedTextStyle(
+                    fontFamily: _style.fontFamily,
+                    fontSize: _style.fontSize,
+                    fontWeight: _style.fontWeight,
+                    fontStyle: _style.fontStyle,
+                    color: color,
+                  );
+                });
+              },
             ),
           ],
         ),

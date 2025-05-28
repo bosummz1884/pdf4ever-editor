@@ -70,14 +70,5 @@ flutter:
     - assets/fonts/NeueHaasGrotesk.ttf
     - assets/fonts/ProximaNova.ttf
     - assets/fonts/Lato.ttf
-    - assets/fonts/Montserrat.ttf
     - assets/fonts/Roboto-Regular.ttf
-    - assets/fonts/OpenSans.ttf
-    - assets/fonts/NotoSans.ttf
-    - assets/fonts/Raleway.ttf
-    - assets/fonts/SourceSansPro.ttf
-    - assets/fonts/PTSans.ttf
-    - assets/fonts/Poppins.ttf
-    - assets/fonts/Inter.ttf
-    - assets/fonts/Ubuntu.ttf
-    - assets/fonts/Merriweather.ttf
+

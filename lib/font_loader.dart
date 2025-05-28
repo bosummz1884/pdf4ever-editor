@@ -1,0 +1,61 @@
+import 'package:flutter/services.dart';
+
+Future<void> loadCustomFonts() async {
+  final fontNames = [
+    'Roboto',
+    'OpenSans',
+    'Lato',
+    'Montserrat',
+    'Oswald',
+    'Raleway',
+    'Poppins',
+    'NotoSans',
+    'Ubuntu',
+    'Merriweather',
+    'FiraSans',
+    'TitilliumWeb',
+    'SourceSansPro',
+    'PTSans',
+    'WorkSans',
+    'Cabin',
+    'Quicksand',
+    'PlayfairDisplay',
+    'Rubik',
+    'Inconsolata',
+    'ZillaSlab',
+    'Muli',
+    'Bitter',
+    'Manrope',
+    'Barlow',
+    'Arimo',
+    'JosefinSans',
+    'Anton',
+    'Cairo',
+    'Asap',
+    'IBM Plex Sans',
+    'Hind',
+    'Teko',
+    'Karla',
+    'Exo2',
+    'Signika',
+    'LibreFranklin',
+    'Heebo',
+    'Questrial',
+    'DM Sans',
+    'Lexend',
+    'Chivo',
+    'Inter',
+    'Mulish',
+    'Nunito',
+    'CrimsonText',
+    'Mukta',
+    'VarelaRound',
+    'FiraCode',
+    'SpaceMono',
+  ];
+
+  for (final font in fontNames) {
+    final loader = FontLoader(font)..addFont(rootBundle.load('assets/fonts/$font.ttf'));
+    await loader.load();
+  }
+}

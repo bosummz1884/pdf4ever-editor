@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PDF4EVER Editor</title>
+  <link rel="icon" href="data:,"> <!-- ✅ FIXED: this was inside <head link ...> which is invalid -->
   <style>
     body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
     #pdf-container { position: relative; margin-top: 20px; }
@@ -25,8 +25,31 @@
   <input type="file" id="pdf-upload" accept="application/pdf" />
   <div id="pdf-container"></div>
   <button id="download-pdf">Download Edited PDF</button>
+
+  <!-- PDF.js and PDF-lib libraries -->
   <script src="https://unpkg.com/pdfjs-dist/build/pdf.min.js"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <!-- Your editor script -->
   <script type="module" src="./src/pdfEditor.js"></script>
+
+  <!-- Firebase Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCblZ1GDxgqaUr9VljECLVG9-x-LdDIUhI",
+      authDomain: "pdf4evereditor.firebaseapp.com",
+      projectId: "pdf4evereditor",
+      storageBucket: "pdf4evereditor.appspot.com", <!-- ✅ FIXED: this was incorrect -->
+      messagingSenderId: "241313716583",
+      appId: "1:241313716583:web:a91d8985f3480aae8537c2",
+      measurementId: "G-K5JHWTHFWS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 </html>

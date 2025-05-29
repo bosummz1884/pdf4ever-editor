@@ -55,57 +55,60 @@
   <button id="download-pdf">Download Edited PDF</button>
 
   <!-- PDF libraries -->
-  <script src="https://unpkg.com/pdfjs-dist/build/pdf.min.js"></script>
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
-  <!-- Load your actual JS from built assets, not src/ -->
-  <script type="module" src="/assets/index.js"></script>
+  <!-- PDF.js worker setup -->
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  </script>
+
+  <!-- Your app logic -->
+  <script type="module" src="./src/pdfEditor.js"></script>
+
+  <!-- Inline viewer/renderer logic -->
+  <script type="module">
+    document.getElementById('pdf-upload').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const container = document.getElementById('pdf-container');
+        container.innerHTML = '';
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+          const page = await pdfDoc.getPage(i);
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          container.appendChild(canvas);
+
+          const context = canvas.getContext('2d');
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          // Add text layer
+          const textLayerDiv = document.createElement('div');
+          textLayerDiv.className = 'textLayer';
+          container.appendChild(textLayerDiv);
+
+          await page.getTextContent().then((textContent) => {
+            pdfjsLib.renderTextLayer({
+              textContent,
+              container: textLayerDiv,
+              viewport,
+              textDivs: []
+            });
+          });
+        }
+      } else {
+        alert('Please upload a valid PDF file.');
+      }
+    });
+
+    document.getElementById('download-pdf').addEventListener('click', () => {
+      alert('Download functionality not implemented yet.');
+    });
+  </script>
 </body>
 </html>
-<script>
-  // Ensure PDF.js worker is set up correctly
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist/build/pdf.worker.min.js';
-
-  // Initialize PDF viewer and editor
-  document.getElementById('pdf-upload').addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const container = document.getElementById('pdf-container');
-      container.innerHTML = ''; // Clear previous content
-
-      for (let i = 1; i <= pdfDoc.numPages; i++) {
-        const page = await pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        container.appendChild(canvas);
-
-        const context = canvas.getContext('2d');
-        await page.render({ canvasContext: context, viewport }).promise;
-
-        // Add text layer
-        const textLayerDiv = document.createElement('div');
-        textLayerDiv.className = 'textLayer';
-        container.appendChild(textLayerDiv);
-        
-        await page.getTextContent().then((textContent) => {
-          pdfjsLib.renderTextLayer({
-            textContent,
-            container: textLayerDiv,
-            viewport,
-            textDivs: []
-          });
-        });
-      }
-    } else {
-      alert('Please upload a valid PDF file.');
-    }
-  });
-
-  document.getElementById('download-pdf').addEventListener('click', () => {
-    alert('Download functionality not implemented yet.');
-  });
-</script>

@@ -1,5 +1,5 @@
 name: pdf4ever
-description: A cyberpunk-grade PDF editor focused on inline text editing and visual accuracy.
+description: A PDF editor focused on inline text editing and visual accuracy.
 version: 1.0.0+1
 
 environment:
@@ -8,7 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  file_picker: ^6.1.1
+  file_picker: ^10.1.9
   pdfx: ^2.3.0
   pdf: ^3.10.4
   path_provider: ^2.1.2
@@ -22,7 +22,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
@@ -75,6 +75,4 @@ flutter:
     - assets/fonts/SpaceMono-Regular.ttf
     - assets/fonts/TitilliumWeb-Regular.ttf
     - assets/fonts/WorkSans[wght].ttf
-    - assets/fonts/WorkSans-Italic[wght].ttf
-    - assets/fonts/Didot.ttf
-    
+    - assets/fonts/WorkSans-Italic[wght].ttf    

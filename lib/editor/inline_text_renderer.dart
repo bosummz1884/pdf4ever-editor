@@ -50,7 +50,7 @@ class InlineTextRenderer extends StatelessWidget {
               ),
             ),
           );
-        }).toList(),
+        })
       ],
     );
   }

@@ -1,5 +1,6 @@
-const { PDFDocument } = window.pdfLib;
+
 const pdfjsLib = window.pdfjsLib;
+const { PDFDocument } = Lib;
 const fileInput = document.getElementById('pdf-upload');
 const pdfContainer = document.getElementById('pdf-container');
 const downloadBtn = document.getElementById('download-pdf');
